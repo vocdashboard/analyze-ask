@@ -14,6 +14,267 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_brand_profile: {
+        Row: {
+          agent_gender: string | null
+          agent_name: string | null
+          brand_name: string | null
+          created_at: string | null
+          default_call_to_player: string | null
+          emoji_preference: string | null
+          id: string
+          short_name: string | null
+          slogan: string | null
+          tone_style: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          agent_gender?: string | null
+          agent_name?: string | null
+          brand_name?: string | null
+          created_at?: string | null
+          default_call_to_player?: string | null
+          emoji_preference?: string | null
+          id?: string
+          short_name?: string | null
+          slogan?: string | null
+          tone_style?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          agent_gender?: string | null
+          agent_name?: string | null
+          brand_name?: string | null
+          created_at?: string | null
+          default_call_to_player?: string | null
+          emoji_preference?: string | null
+          id?: string
+          short_name?: string | null
+          slogan?: string | null
+          tone_style?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_communication_style: {
+        Row: {
+          created_at: string | null
+          emoji_style: string | null
+          formality_level: number | null
+          humor_usage: string | null
+          id: string
+          updated_at: string | null
+          user_id: string
+          warmth_level: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          emoji_style?: string | null
+          formality_level?: number | null
+          humor_usage?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id: string
+          warmth_level?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          emoji_style?: string | null
+          formality_level?: number | null
+          humor_usage?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+          warmth_level?: number | null
+        }
+        Relationships: []
+      }
+      ai_player_behaviour: {
+        Row: {
+          anti_hunter_aggressiveness: number | null
+          created_at: string | null
+          id: string
+          personalization_level: number | null
+          sentimental_memory: boolean | null
+          silent_sniper_style: string[] | null
+          updated_at: string | null
+          user_id: string
+          vip_threshold: string | null
+          vip_tone: string[] | null
+        }
+        Insert: {
+          anti_hunter_aggressiveness?: number | null
+          created_at?: string | null
+          id?: string
+          personalization_level?: number | null
+          sentimental_memory?: boolean | null
+          silent_sniper_style?: string[] | null
+          updated_at?: string | null
+          user_id: string
+          vip_threshold?: string | null
+          vip_tone?: string[] | null
+        }
+        Update: {
+          anti_hunter_aggressiveness?: number | null
+          created_at?: string | null
+          id?: string
+          personalization_level?: number | null
+          sentimental_memory?: boolean | null
+          silent_sniper_style?: string[] | null
+          updated_at?: string | null
+          user_id?: string
+          vip_threshold?: string | null
+          vip_tone?: string[] | null
+        }
+        Relationships: []
+      }
+      ai_safety_crisis: {
+        Row: {
+          allowed_sensitive_terms: string | null
+          bonus_preventif_allowed: boolean | null
+          bonus_preventif_limit: string | null
+          created_at: string | null
+          crisis_keywords: string | null
+          crisis_response_template: string | null
+          crisis_tone_style: string | null
+          forbidden_phrases: string | null
+          id: string
+          risk_appetite: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          allowed_sensitive_terms?: string | null
+          bonus_preventif_allowed?: boolean | null
+          bonus_preventif_limit?: string | null
+          created_at?: string | null
+          crisis_keywords?: string | null
+          crisis_response_template?: string | null
+          crisis_tone_style?: string | null
+          forbidden_phrases?: string | null
+          id?: string
+          risk_appetite?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          allowed_sensitive_terms?: string | null
+          bonus_preventif_allowed?: boolean | null
+          bonus_preventif_limit?: string | null
+          created_at?: string | null
+          crisis_keywords?: string | null
+          crisis_response_template?: string | null
+          crisis_tone_style?: string | null
+          forbidden_phrases?: string | null
+          id?: string
+          risk_appetite?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_support_escalation: {
+        Row: {
+          admin_contact: string | null
+          admin_contact_method: string | null
+          created_at: string | null
+          default_escalation_message: string | null
+          escalation_threshold: string[] | null
+          id: string
+          pic_active_hours: string | null
+          sop_style: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          admin_contact?: string | null
+          admin_contact_method?: string | null
+          created_at?: string | null
+          default_escalation_message?: string | null
+          escalation_threshold?: string[] | null
+          id?: string
+          pic_active_hours?: string | null
+          sop_style?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          admin_contact?: string | null
+          admin_contact_method?: string | null
+          created_at?: string | null
+          default_escalation_message?: string | null
+          escalation_threshold?: string[] | null
+          id?: string
+          pic_active_hours?: string | null
+          sop_style?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      client_account: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          id: string
+          position: string | null
+          updated_at: string | null
+          user_id: string
+          user_name: string | null
+          whatsapp_number: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          position?: string | null
+          updated_at?: string | null
+          user_id: string
+          user_name?: string | null
+          whatsapp_number?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          position?: string | null
+          updated_at?: string | null
+          user_id?: string
+          user_name?: string | null
+          whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
+      client_api_data: {
+        Row: {
+          chat_gpt_api: string | null
+          created_at: string | null
+          id: string
+          supabase_api: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          chat_gpt_api?: string | null
+          created_at?: string | null
+          id?: string
+          supabase_api?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          chat_gpt_api?: string | null
+          created_at?: string | null
+          id?: string
+          supabase_api?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       livechat_messages: {
         Row: {
           created_at: string
