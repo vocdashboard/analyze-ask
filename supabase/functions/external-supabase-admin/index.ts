@@ -79,54 +79,74 @@ serve(async (req) => {
       }
 
       case 'list-schemas': {
-        // Query information_schema to list all schemas
-        const { data, error } = await externalSupabase
-          .from('information_schema.schemata')
-          .select('schema_name')
-          .not('schema_name', 'in', '(pg_catalog,information_schema)');
-        
+        // Use RPC function to list all schemas
+        const { data, error } = await externalSupabase.rpc('get_all_schemas');
         if (error) {
-          // Try alternative approach using RPC or direct query
-          console.log('Schema query failed, trying alternative approach');
-          const { data: rpcData, error: rpcError } = await externalSupabase.rpc('get_schemas');
-          
-          if (rpcError) {
-            console.error('Error listing schemas:', rpcError);
-            return new Response(
-              JSON.stringify({ error: 'Unable to list schemas', details: rpcError.message }),
-              { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-            );
-          }
-          
+          console.error('Error listing schemas:', error);
           return new Response(
-            JSON.stringify({ schemas: rpcData }),
-            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            JSON.stringify({ error: error.message }),
+            { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        
         return new Response(
           JSON.stringify({ schemas: data }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
 
-      case 'list-tables': {
+      case 'schema-tables': {
         const schema = url.searchParams.get('schema') || 'public';
-        const { data, error } = await externalSupabase
-          .from('information_schema.tables')
-          .select('table_name, table_type')
-          .eq('table_schema', schema);
-        
+        const { data, error } = await externalSupabase.rpc('get_schema_tables', { p_schema: schema });
         if (error) {
-          console.error('Error listing tables:', error);
+          console.error('Error listing schema tables:', error);
           return new Response(
             JSON.stringify({ error: error.message }),
             { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        
         return new Response(
           JSON.stringify({ tables: data }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      case 'table-columns': {
+        const schema = url.searchParams.get('schema') || 'public';
+        const table = url.searchParams.get('table');
+        if (!table) {
+          return new Response(
+            JSON.stringify({ error: 'table parameter is required' }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+        const { data, error } = await externalSupabase.rpc('get_table_columns', { 
+          p_schema: schema, 
+          p_table: table 
+        });
+        if (error) {
+          console.error('Error listing table columns:', error);
+          return new Response(
+            JSON.stringify({ error: error.message }),
+            { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+        return new Response(
+          JSON.stringify({ columns: data }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      case 'full-overview': {
+        const { data, error } = await externalSupabase.rpc('get_full_schema_overview');
+        if (error) {
+          console.error('Error getting full overview:', error);
+          return new Response(
+            JSON.stringify({ error: error.message }),
+            { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+        return new Response(
+          JSON.stringify({ overview: data }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
@@ -216,7 +236,7 @@ serve(async (req) => {
         return new Response(
           JSON.stringify({ 
             error: 'Invalid action',
-            available_actions: ['list-users', 'list-schemas', 'list-tables', 'get-user-roles', 'add-user-role', 'remove-user-role']
+            available_actions: ['list-users', 'list-schemas', 'schema-tables', 'table-columns', 'full-overview', 'get-user-roles', 'add-user-role', 'remove-user-role']
           }),
           { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
