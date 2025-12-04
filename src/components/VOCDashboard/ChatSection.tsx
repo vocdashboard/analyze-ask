@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { ChatList, ChatWindow, CustomerDetails, LiveChat } from "./Chat";
-import { supabase } from "@/integrations/supabase/client";
+import { supabaseExternal } from "@/lib/supabase";
 
 export function ChatSection() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -11,7 +11,7 @@ export function ChatSection() {
   // Load initial data
   useEffect(() => {
     const loadChats = async () => {
-      const { data: sessions, error } = await supabase
+      const { data: sessions, error } = await supabaseExternal
         .from('livechat_sessions')
         .select('*')
         .order('timestamp', { ascending: false });
@@ -26,7 +26,7 @@ export function ChatSection() {
       // Load messages for each session
       const chatsWithMessages = await Promise.all(
         sessions.map(async (session) => {
-          const { data: messages } = await supabase
+          const { data: messages } = await supabaseExternal
             .from('livechat_messages')
             .select('*')
             .eq('session_id', session.id)
@@ -73,7 +73,7 @@ export function ChatSection() {
 
   // Realtime listener for sessions
   useEffect(() => {
-    const channel = supabase
+    const channel = supabaseExternal
       .channel('livechat_sessions_changes')
       .on(
         'postgres_changes',
@@ -89,7 +89,7 @@ export function ChatSection() {
             const session = payload.new as any;
             
             // Load messages for this session
-            const { data: messages } = await supabase
+            const { data: messages } = await supabaseExternal
               .from('livechat_messages')
               .select('*')
               .eq('session_id', session.id)
@@ -151,7 +151,7 @@ export function ChatSection() {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      supabaseExternal.removeChannel(channel);
     };
   }, [selectedChat]);
 
@@ -159,7 +159,7 @@ export function ChatSection() {
   useEffect(() => {
     if (!selectedChat) return;
 
-    const channel = supabase
+    const channel = supabaseExternal
       .channel('livechat_messages_changes')
       .on(
         'postgres_changes',
@@ -208,7 +208,7 @@ export function ChatSection() {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      supabaseExternal.removeChannel(channel);
     };
   }, [selectedChat]);
 
