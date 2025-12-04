@@ -1,1 +1,4 @@
 project_id = "lptcwakgpgyoegfrnlgw"
+
+[functions.external-supabase-admin]
+verify_jwt = false
