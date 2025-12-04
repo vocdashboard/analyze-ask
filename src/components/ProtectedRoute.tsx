@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { supabaseExternal } from "@/lib/supabase";
 import { Session } from "@supabase/supabase-js";
 
 interface ProtectedRouteProps {
@@ -13,7 +13,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   useEffect(() => {
     // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    const { data: { subscription } } = supabaseExternal.auth.onAuthStateChange(
       (event, session) => {
         setSession(session);
         setLoading(false);
@@ -21,7 +21,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
 
     // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabaseExternal.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setLoading(false);
     });
@@ -38,7 +38,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   if (!session) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/auth" replace />;
   }
 
   return <>{children}</>;

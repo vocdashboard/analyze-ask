@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabaseExternal } from '@/lib/supabase';
 import { toast } from 'sonner';
 import type { VOCConfig } from '@/types/voc-config';
 
@@ -9,7 +9,7 @@ export const useVOCData = () => {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await supabaseExternal.auth.getUser();
       setUserId(user?.id || null);
       setLoading(false);
     };
@@ -29,13 +29,13 @@ export const useVOCData = () => {
         accountRes,
         apiDataRes
       ] = await Promise.all([
-        (supabase as any).schema('ai').from('brand_profile').select('*').eq('user_id', userId).maybeSingle(),
-        (supabase as any).schema('ai').from('communication_style').select('*').eq('user_id', userId).maybeSingle(),
-        (supabase as any).schema('ai').from('support_escalation').select('*').eq('user_id', userId).maybeSingle(),
-        (supabase as any).schema('ai').from('safety_crisis').select('*').eq('user_id', userId).maybeSingle(),
-        (supabase as any).schema('ai').from('player_behaviour').select('*').eq('user_id', userId).maybeSingle(),
-        (supabase as any).schema('client').from('account').select('*').eq('user_id', userId).maybeSingle(),
-        (supabase as any).schema('client').from('api_data').select('*').eq('user_id', userId).maybeSingle()
+        (supabaseExternal as any).schema('ai').from('brand_profile').select('*').eq('user_id', userId).maybeSingle(),
+        (supabaseExternal as any).schema('ai').from('communication_style').select('*').eq('user_id', userId).maybeSingle(),
+        (supabaseExternal as any).schema('ai').from('support_escalation').select('*').eq('user_id', userId).maybeSingle(),
+        (supabaseExternal as any).schema('ai').from('safety_crisis').select('*').eq('user_id', userId).maybeSingle(),
+        (supabaseExternal as any).schema('ai').from('player_behaviour').select('*').eq('user_id', userId).maybeSingle(),
+        (supabaseExternal as any).schema('client').from('account').select('*').eq('user_id', userId).maybeSingle(),
+        (supabaseExternal as any).schema('client').from('api_data').select('*').eq('user_id', userId).maybeSingle()
       ]);
 
       const brandProfile = brandProfileRes.data as any;
@@ -122,7 +122,7 @@ export const useVOCData = () => {
       emoji_preference: data.emojiPreference,
     };
 
-    const { error } = await (supabase as any)
+    const { error } = await (supabaseExternal as any)
       .schema('ai')
       .from('brand_profile')
       .upsert(payload, { onConflict: 'user_id' });
@@ -145,7 +145,7 @@ export const useVOCData = () => {
       emoji_style: data.emojiStyle,
     };
 
-    const { error } = await (supabase as any)
+    const { error } = await (supabaseExternal as any)
       .schema('ai')
       .from('communication_style')
       .upsert(payload, { onConflict: 'user_id' });
@@ -170,7 +170,7 @@ export const useVOCData = () => {
       default_escalation_message: data.defaultEscalationMessage,
     };
 
-    const { error } = await (supabase as any)
+    const { error } = await (supabaseExternal as any)
       .schema('ai')
       .from('support_escalation')
       .upsert(payload, { onConflict: 'user_id' });
@@ -197,7 +197,7 @@ export const useVOCData = () => {
       crisis_response_template: data.crisisResponseTemplate,
     };
 
-    const { error } = await (supabase as any)
+    const { error } = await (supabaseExternal as any)
       .schema('ai')
       .from('safety_crisis')
       .upsert(payload, { onConflict: 'user_id' });
@@ -222,7 +222,7 @@ export const useVOCData = () => {
       vip_tone: data.vipTone,
     };
 
-    const { error } = await (supabase as any)
+    const { error } = await (supabaseExternal as any)
       .schema('ai')
       .from('player_behaviour')
       .upsert(payload, { onConflict: 'user_id' });
@@ -245,7 +245,7 @@ export const useVOCData = () => {
       position: data.position,
     };
 
-    const { error } = await (supabase as any)
+    const { error } = await (supabaseExternal as any)
       .schema('client')
       .from('account')
       .upsert(payload, { onConflict: 'user_id' });
@@ -266,7 +266,7 @@ export const useVOCData = () => {
       chat_gpt_api: data.chatGptApi,
     };
 
-    const { error } = await (supabase as any)
+    const { error } = await (supabaseExternal as any)
       .schema('client')
       .from('api_data')
       .upsert(payload, { onConflict: 'user_id' });
