@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabaseExternal } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -18,7 +18,7 @@ export default function Auth() {
 
   // Check if already authenticated
   useEffect(() => {
-    const { data: { subscription } } = supabaseExternal.auth.onAuthStateChange(
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (session) {
           navigate('/dashboard', { replace: true });
@@ -26,7 +26,7 @@ export default function Auth() {
       }
     );
 
-    supabaseExternal.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         navigate('/dashboard', { replace: true });
       }
@@ -52,7 +52,7 @@ export default function Auth() {
 
     try {
       if (isLogin) {
-        const { error } = await supabaseExternal.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
@@ -69,7 +69,7 @@ export default function Auth() {
         toast.success('Login berhasil!');
         navigate('/dashboard', { replace: true });
       } else {
-        const { error } = await supabaseExternal.auth.signUp({
+        const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -86,7 +86,7 @@ export default function Auth() {
           return;
         }
 
-        toast.success('Registrasi berhasil! Silakan cek email untuk verifikasi.');
+        toast.success('Registrasi berhasil! Silakan login.');
       }
     } catch (error: any) {
       toast.error('Terjadi kesalahan, coba lagi');

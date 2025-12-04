@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabaseExternal } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import type { VOCConfig } from '@/types/voc-config';
 
@@ -9,7 +9,7 @@ export const useVOCData = () => {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabaseExternal.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser();
       setUserId(user?.id || null);
       setLoading(false);
     };
@@ -29,13 +29,13 @@ export const useVOCData = () => {
         accountRes,
         apiDataRes
       ] = await Promise.all([
-        (supabaseExternal as any).schema('ai').from('brand_profile').select('*').eq('user_id', userId).maybeSingle(),
-        (supabaseExternal as any).schema('ai').from('communication_style').select('*').eq('user_id', userId).maybeSingle(),
-        (supabaseExternal as any).schema('ai').from('support_escalation').select('*').eq('user_id', userId).maybeSingle(),
-        (supabaseExternal as any).schema('ai').from('safety_crisis').select('*').eq('user_id', userId).maybeSingle(),
-        (supabaseExternal as any).schema('ai').from('player_behaviour').select('*').eq('user_id', userId).maybeSingle(),
-        (supabaseExternal as any).schema('client').from('account').select('*').eq('user_id', userId).maybeSingle(),
-        (supabaseExternal as any).schema('client').from('api_data').select('*').eq('user_id', userId).maybeSingle()
+        supabase.from('ai_brand_profile').select('*').eq('user_id', userId).maybeSingle(),
+        supabase.from('ai_communication_style').select('*').eq('user_id', userId).maybeSingle(),
+        supabase.from('ai_support_escalation').select('*').eq('user_id', userId).maybeSingle(),
+        supabase.from('ai_safety_crisis').select('*').eq('user_id', userId).maybeSingle(),
+        supabase.from('ai_player_behaviour').select('*').eq('user_id', userId).maybeSingle(),
+        supabase.from('client_account').select('*').eq('user_id', userId).maybeSingle(),
+        supabase.from('client_api_data').select('*').eq('user_id', userId).maybeSingle()
       ]);
 
       const brandProfile = brandProfileRes.data as any;
@@ -122,9 +122,8 @@ export const useVOCData = () => {
       emoji_preference: data.emojiPreference,
     };
 
-    const { error } = await (supabaseExternal as any)
-      .schema('ai')
-      .from('brand_profile')
+    const { error } = await supabase
+      .from('ai_brand_profile')
       .upsert(payload, { onConflict: 'user_id' });
 
     if (error) {
@@ -145,9 +144,8 @@ export const useVOCData = () => {
       emoji_style: data.emojiStyle,
     };
 
-    const { error } = await (supabaseExternal as any)
-      .schema('ai')
-      .from('communication_style')
+    const { error } = await supabase
+      .from('ai_communication_style')
       .upsert(payload, { onConflict: 'user_id' });
 
     if (error) {
@@ -170,9 +168,8 @@ export const useVOCData = () => {
       default_escalation_message: data.defaultEscalationMessage,
     };
 
-    const { error } = await (supabaseExternal as any)
-      .schema('ai')
-      .from('support_escalation')
+    const { error } = await supabase
+      .from('ai_support_escalation')
       .upsert(payload, { onConflict: 'user_id' });
 
     if (error) {
@@ -197,9 +194,8 @@ export const useVOCData = () => {
       crisis_response_template: data.crisisResponseTemplate,
     };
 
-    const { error } = await (supabaseExternal as any)
-      .schema('ai')
-      .from('safety_crisis')
+    const { error } = await supabase
+      .from('ai_safety_crisis')
       .upsert(payload, { onConflict: 'user_id' });
 
     if (error) {
@@ -222,9 +218,8 @@ export const useVOCData = () => {
       vip_tone: data.vipTone,
     };
 
-    const { error } = await (supabaseExternal as any)
-      .schema('ai')
-      .from('player_behaviour')
+    const { error } = await supabase
+      .from('ai_player_behaviour')
       .upsert(payload, { onConflict: 'user_id' });
 
     if (error) {
@@ -245,9 +240,8 @@ export const useVOCData = () => {
       position: data.position,
     };
 
-    const { error } = await (supabaseExternal as any)
-      .schema('client')
-      .from('account')
+    const { error } = await supabase
+      .from('client_account')
       .upsert(payload, { onConflict: 'user_id' });
 
     if (error) {
@@ -266,9 +260,8 @@ export const useVOCData = () => {
       chat_gpt_api: data.chatGptApi,
     };
 
-    const { error } = await (supabaseExternal as any)
-      .schema('client')
-      .from('api_data')
+    const { error } = await supabase
+      .from('client_api_data')
       .upsert(payload, { onConflict: 'user_id' });
 
     if (error) {
